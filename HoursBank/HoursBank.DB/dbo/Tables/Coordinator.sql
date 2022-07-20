@@ -1,0 +1,8 @@
+﻿CREATE TABLE [dbo].[Coordinator]
+(
+    [Id] INT NOT NULL PRIMARY KEY,
+    [TeamId] INT NOT NULL,
+    [UserId] INT NOT NULL,
+    CONSTRAINT [FK_COORDINATOR_TEAM] FOREIGN KEY ([TeamId]) REFERENCES [dbo].[Team] ([Id]),
+    CONSTRAINT [FK_COORDINATOR_USER] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
+)

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\HoursBank.Domain\HoursBank.Domain.csproj" />
+    <ProjectReference Include="..\HoursBank.Service\HoursBank.Service.csproj" />
+    <ProjectReference Include="..\HoursBank.Data\HoursBank.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+	  <PackageReference Include="AutoMapper" Version="11.0.0" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+</Project>
