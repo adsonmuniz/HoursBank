@@ -39,5 +39,32 @@
             ],
             "problemMatcher": "$msCompile"
         },
+        {
+            "label": "Data.Test",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "${workspaceFolder}/HoursBank.Data.Test/HoursBank.Data.Test.csproj"
+            ]
+        },
+        {
+            "label": "Service.Test",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "${workspaceFolder}/HoursBank.Service.Test/HoursBank.Service.Test.csproj"
+            ]
+        },
+        {
+            "label": "Api.Test",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "${workspaceFolder}/HoursBank.Api.Test/HoursBank.Api.Test.csproj"
+            ]
+        }
     ]
 }

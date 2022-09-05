@@ -9,13 +9,13 @@ namespace HoursBank.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class CoordinatorController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly ICoordinatorService _coordinatorService;
 
-        public UsersController(IUserService userService)
+        public CoordinatorController(ICoordinatorService coordinatorService)
         {
-            _userService = userService;
+            _coordinatorService = coordinatorService;
         }
 
         [HttpGet]
@@ -28,7 +28,7 @@ namespace HoursBank.Api.Controllers
 
             try
             {
-                var result = await _userService.GetAll();
+                var result = await _coordinatorService.GetAll();
                 if (result != null)
                 {
                     return Ok(result);
@@ -52,7 +52,7 @@ namespace HoursBank.Api.Controllers
 
             try
             {
-                var result = await _userService.Get(id);
+                var result = await _coordinatorService.Get(id);
                 if (result != null)
                 {
                     return Ok(result);
@@ -66,8 +66,8 @@ namespace HoursBank.Api.Controllers
         }
 
         [HttpGet]
-        [Route("GetByEmail/{email}")]
-        public async Task<ActionResult> GetByEmail(string email)
+        [Route("GetByUserId/{id}")]
+        public async Task<ActionResult> GetByUser(int id)
         {
             if (!ModelState.IsValid)
             {
@@ -76,7 +76,7 @@ namespace HoursBank.Api.Controllers
 
             try
             {
-                var result = await _userService.GetByEmail(email);
+                var result = await _coordinatorService.GetByUser(id);
                 if (result != null)
                 {
                     return Ok(result);
@@ -100,7 +100,7 @@ namespace HoursBank.Api.Controllers
 
             try
             {
-                var result = await _userService.GetByTeam(id);
+                var result = await _coordinatorService.GetByTeam(id);
                 if (result != null)
                 {
                     return Ok(result);
@@ -115,7 +115,7 @@ namespace HoursBank.Api.Controllers
 
         [HttpPost]
         [Route("Insert")]
-        public async Task<ActionResult> Post([FromBody] UserDto user)
+        public async Task<ActionResult> Post([FromBody] CoordinatorDto coordinator)
         {
             if (!ModelState.IsValid)
             {
@@ -124,12 +124,13 @@ namespace HoursBank.Api.Controllers
 
             try
             {
-                var result = await _userService.Post(user);
+                var result = await _coordinatorService.Post(coordinator);
                 if (result != null)
                 {
                     return new ObjectResult(result) { StatusCode = (int)HttpStatusCode.Created }; // StatusCode 201
                 }
                 return NoContent();
+                
             }
             catch (Exception ex)
             {
@@ -139,7 +140,7 @@ namespace HoursBank.Api.Controllers
 
         [HttpPut]
         [Route("Update")]
-        public async Task<ActionResult> Put([FromBody] UserDto user)
+        public async Task<ActionResult> Put([FromBody] CoordinatorDto coordinator)
         {
             if (!ModelState.IsValid)
             {
@@ -148,7 +149,7 @@ namespace HoursBank.Api.Controllers
 
             try
             {
-                var result = await _userService.Put(user);
+                var result = await _coordinatorService.Put(coordinator);
                 if (result != null)
                 {
                     return new ObjectResult(result) { StatusCode = (int)HttpStatusCode.Accepted }; // StatusCode 202
@@ -172,7 +173,7 @@ namespace HoursBank.Api.Controllers
 
             try
             {
-                return Ok(await _userService.Delete(id));
+                return Ok(await _coordinatorService.Delete(id));
             }
             catch (Exception ex)
             {

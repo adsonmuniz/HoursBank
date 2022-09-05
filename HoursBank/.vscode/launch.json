@@ -12,7 +12,10 @@
             "program": "${workspaceFolder}/HoursBank.Api/bin/Debug/net5.0/HoursBank.Api.dll",
             "args": [],
             "cwd": "${workspaceFolder}/HoursBank.Api",
-            "stopAtEntry": false
+            "stopAtEntry": false,
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
         }
     ]
 }

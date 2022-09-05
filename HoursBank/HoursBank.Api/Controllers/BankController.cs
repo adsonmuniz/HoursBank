@@ -9,13 +9,13 @@ namespace HoursBank.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TeamsController : ControllerBase
+    public class BankController : ControllerBase
     {
-        private readonly ITeamService _teamService;
+        private readonly IBankService _bankService;
 
-        public TeamsController(ITeamService teamService)
+        public BankController(IBankService bankService)
         {
-            _teamService = teamService;
+            _bankService = bankService;
         }
 
         [HttpGet]
@@ -28,31 +28,7 @@ namespace HoursBank.Api.Controllers
 
             try
             {
-                var result = await _teamService.GetAll();
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, $"{ex.Message}. StackTrace: {ex.StackTrace}");
-            }
-        }
-
-        [HttpGet]
-        [Route("GetById/{id}")]
-        public async Task<ActionResult> Get(int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-                var result = await _teamService.Get(id);
+                var result = await _bankService.GetAll();
                 if (result != null)
                 {
                     return Ok(result);
@@ -66,8 +42,8 @@ namespace HoursBank.Api.Controllers
         }
 
         [HttpPost]
-        [Route("GetByName")]
-        public async Task<ActionResult> GetByName([FromBody] TeamDto team)
+        [Route("Filter")]
+        public async Task<ActionResult> Get([FromBody] BankDto bank)
         {
             if (!ModelState.IsValid)
             {
@@ -76,7 +52,7 @@ namespace HoursBank.Api.Controllers
 
             try
             {
-                var result = await _teamService.GetByName(team.Name);
+                var result = await _bankService.Get(bank.Id, bank.Start, bank.End, bank.Approved);
                 if (result != null)
                 {
                     return Ok(result);
@@ -91,7 +67,7 @@ namespace HoursBank.Api.Controllers
 
         [HttpPost]
         [Route("Insert")]
-        public async Task<ActionResult> Post([FromBody] TeamDto team)
+        public async Task<ActionResult> Post([FromBody] BankDto bank)
         {
             if (!ModelState.IsValid)
             {
@@ -100,7 +76,7 @@ namespace HoursBank.Api.Controllers
 
             try
             {
-                var result = await _teamService.Post(team);
+                var result = await _bankService.Post(bank);
                 if (result != null)
                 {
                     return new ObjectResult(result) { StatusCode = (int)HttpStatusCode.Created }; // StatusCode 201
@@ -115,7 +91,7 @@ namespace HoursBank.Api.Controllers
 
         [HttpPut]
         [Route("Update")]
-        public async Task<ActionResult> Put([FromBody] TeamDto team)
+        public async Task<ActionResult> Put([FromBody] BankDto bank)
         {
             if (!ModelState.IsValid)
             {
@@ -124,7 +100,7 @@ namespace HoursBank.Api.Controllers
 
             try
             {
-                var result = await _teamService.Put(team);
+                var result = await _bankService.Put(bank);
                 if (result != null)
                 {
                     return new ObjectResult(result) { StatusCode = (int)HttpStatusCode.Accepted }; // StatusCode 202
@@ -148,7 +124,7 @@ namespace HoursBank.Api.Controllers
 
             try
             {
-                return Ok(await _teamService.Delete(id));
+                return Ok(await _bankService.Delete(id));
             }
             catch (Exception ex)
             {
