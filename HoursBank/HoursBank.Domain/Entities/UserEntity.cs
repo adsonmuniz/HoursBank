@@ -9,8 +9,8 @@ namespace HoursBank.Domain.Entities
         public string ClientSecret { get; set; }
         public long Hours { get; set; }
         public bool Admin { get; set; }
-        public bool Active { get; set; }
 #nullable enable
+        public bool? Active { get; set; }
         public int? TeamId { get; set; }
 #nullable disable
     }

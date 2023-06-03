@@ -1,4 +1,5 @@
 ﻿using HoursBank.Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace HoursBank.Api.Controllers
 {
+    [Authorize("Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class TypeController : ControllerBase
@@ -41,7 +43,7 @@ namespace HoursBank.Api.Controllers
         }
 
         [HttpGet]
-        [Route("GetById/{id}")]
+        [Route("{id}")]
         public async Task<ActionResult> Get(int id)
         {
             if (!ModelState.IsValid)

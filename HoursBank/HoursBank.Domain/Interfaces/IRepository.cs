@@ -11,5 +11,6 @@ namespace HoursBank.Domain.Interfaces
         Task<T> InsertAsync(T item);
         Task<T> UpdateAsync(T item);
         Task<bool> DeleteAsync(int id);
+        Task<bool> SaveChangesAsync();
     }
 }

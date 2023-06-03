@@ -1,5 +1,6 @@
 ﻿using HoursBank.Domain.Dtos;
 using HoursBank.Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace HoursBank.Api.Controllers
 {
+    [Authorize("Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class BankController : ControllerBase
@@ -52,7 +54,31 @@ namespace HoursBank.Api.Controllers
 
             try
             {
-                var result = await _bankService.Get(bank.Id, bank.Start, bank.End, bank.Approved);
+                var result = await _bankService.Get(bank);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, $"{ex.Message}. StackTrace: {ex.StackTrace}");
+            }
+        }
+
+        [HttpGet]
+        [Route("GetByCoordinator/{id}")]
+        public async Task<ActionResult> GetByCoordinator(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var result = await _bankService.GetByCoordinator(id);
                 if (result != null)
                 {
                     return Ok(result);

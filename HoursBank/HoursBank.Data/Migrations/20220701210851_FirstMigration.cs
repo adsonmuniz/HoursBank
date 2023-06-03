@@ -84,7 +84,7 @@ namespace HoursBank.Data.Migrations
                     ClientSecret = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Hours = table.Column<long>(type: "bigint", nullable: false, defaultValue: 0L),
                     Admin = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    Active = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    Active = table.Column<bool>(type: "bit", nullable: true),
                     TeamId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -110,7 +110,7 @@ namespace HoursBank.Data.Migrations
             migrationBuilder.InsertData(
                 table: "User",
                 columns: new[] { "Id", "Active", "Admin", "ClientId", "ClientSecret", "CreatedAt", "Email", "Name", "Password", "TeamId" },
-                values: new object[] { 1, true, true, null, null, new DateTime(2022, 7, 1, 18, 8, 51, 417, DateTimeKind.Local).AddTicks(5151), "banco.horas.admin@gmail.com", "Administrador", "ef73781effc5774100f87fe2f437a435", 1 });
+                values: new object[] { 1, true, true, null, null, new DateTime(2022, 7, 1, 18, 8, 51, 417, DateTimeKind.Local).AddTicks(5151), "banco.horas.admin@gmail.com", "Administrador", "XPFyNolqi7YwoEM6iww0fg==", 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bank_Description",

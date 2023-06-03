@@ -1,5 +1,6 @@
 ﻿using HoursBank.Domain.Dtos;
 using HoursBank.Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace HoursBank.Api.Controllers
 {
+    [Authorize("Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class CoordinatorController : ControllerBase
@@ -42,7 +44,7 @@ namespace HoursBank.Api.Controllers
         }
 
         [HttpGet]
-        [Route("GetById/{id}")]
+        [Route("{id}")]
         public async Task<ActionResult> Get(int id)
         {
             if (!ModelState.IsValid)
@@ -66,7 +68,7 @@ namespace HoursBank.Api.Controllers
         }
 
         [HttpGet]
-        [Route("GetByUserId/{id}")]
+        [Route("GetByUser/{id}")]
         public async Task<ActionResult> GetByUser(int id)
         {
             if (!ModelState.IsValid)
@@ -90,7 +92,7 @@ namespace HoursBank.Api.Controllers
         }
 
         [HttpGet]
-        [Route("GetByTeamId/{id}")]
+        [Route("GetByTeam/{id}")]
         public async Task<ActionResult> GetByTeam(int id)
         {
             if (!ModelState.IsValid)

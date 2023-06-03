@@ -32,7 +32,8 @@ namespace HoursBank.Data.Repository
             }
             catch (Exception ex)
             {
-                throw ex;
+                //throw ex;
+                return null;
             }
         }
 
@@ -44,7 +45,8 @@ namespace HoursBank.Data.Repository
             }
             catch (Exception ex)
             {
-                throw ex;
+                //throw ex;
+                return null;
             }
         }
 
@@ -58,7 +60,7 @@ namespace HoursBank.Data.Repository
             }
             catch (Exception ex)
             {
-                throw ex;
+                //throw ex;
             }
             return item;
         }
@@ -79,7 +81,7 @@ namespace HoursBank.Data.Repository
             }
             catch (Exception ex)
             {
-                throw ex;
+                //throw ex;
             }
             return item;
         }
@@ -99,9 +101,23 @@ namespace HoursBank.Data.Repository
             }
             catch (Exception ex)
             {
-                throw ex;
+                //throw ex;
             }
             return true;
         }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
+
 }

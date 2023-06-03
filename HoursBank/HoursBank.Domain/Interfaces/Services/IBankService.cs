@@ -8,8 +8,9 @@ namespace HoursBank.Domain.Interfaces.Services
 {
     public interface IBankService
     {
-        Task<IEnumerable<BankResponse>> Get(int id, DateTime? init, DateTime? end, bool? approved);
+        Task<IEnumerable<BankResponse>> Get(BankDto bank);
         Task<IEnumerable<BankResponse>> GetAll();
+        Task<IEnumerable<BankResponse>> GetByCoordinator(int id);
         Task<BankResponse> Post(BankDto bank);
         Task<BankResponse> Put(BankDto bank);
         Task<bool> Delete(int id);

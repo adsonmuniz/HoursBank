@@ -13,7 +13,7 @@ namespace HoursBank.CrossCutting.DependencyInjection
         public static void ConfigureDependencyRepository(IServiceCollection services)
         {
             services.AddDbContext<MyContext>(
-                options => options.UseSqlServer("Server=SPVAL0N1-1KN33;Database=HoursBank;Uid=root;Pwd=*Asdfg123")
+                options => options.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=HoursBank;Uid=root;Pwd=Asdfg123")
             );
             // Injection
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));

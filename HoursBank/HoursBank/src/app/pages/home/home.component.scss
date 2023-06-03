@@ -1,0 +1,23 @@
+@import '../../../dist/scss/variables.scss';
+
+div {
+    width: 100%;
+}
+
+div button {
+    margin-bottom: 16px;
+    width: 200px;
+    height: 56px;
+}
+
+.newUsers {
+    border-radius: 15px;
+    padding: 2px 5px;
+    color: white;
+    background-color: $red;
+}
+
+svg {
+    width: 56px;
+    height: 56px;
+}

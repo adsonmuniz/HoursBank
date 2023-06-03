@@ -22,7 +22,7 @@ namespace HoursBank.Data.Test
         {
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddDbContext<MyContext>(o =>
-                o.UseSqlServer($"Persist Security Info=True;Server=SPVAL0N1-1KN33;Database={dataBaseName};User=root;Password=*Asdfg123"),
+                o.UseSqlServer($"Persist Security Info=True;Server=localhost\\SQLEXPRESS;Database={dataBaseName};User=root;Password=Asdfg123"),
                 ServiceLifetime.Transient
             );
 

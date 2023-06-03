@@ -161,8 +161,7 @@ namespace HoursBank.Data.Migrations
 
                     b.Property<bool>("Active")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
 
                     b.Property<bool>("Admin")
                         .ValueGeneratedOnAdd()

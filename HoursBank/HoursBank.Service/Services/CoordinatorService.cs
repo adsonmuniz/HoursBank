@@ -4,6 +4,7 @@ using HoursBank.Domain.Entities;
 using HoursBank.Domain.Interfaces;
 using HoursBank.Domain.Interfaces.Services;
 using HoursBank.Domain.Responses;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -51,14 +52,20 @@ namespace HoursBank.Service.Services
             return null;
         }
 
-        public async Task<IEnumerable<CoordinatorResponse>> GetByTeam(int id)
+        public async Task<bool> Exists(int userId, int teamId)
         {
             var coordinators = await _repository.SelectAsync();
             if (coordinators.Any())
             {
-                return _mapper.Map<List<CoordinatorResponse>>(coordinators.Where(c => c.TeamId == id).ToList());
+                return coordinators.Where(c => c.UserId == userId && c.TeamId == teamId).Any();
             }
-            return null;
+            return false;
+        }
+
+        public async Task<IEnumerable<CoordinatorResponse>> GetByTeam(int id)
+        {
+            var coordinators = await _repository.SelectAsync();
+            return _mapper.Map<List<CoordinatorResponse>>(coordinators.Where(c => c.TeamId == id).ToList());
         }
 
         public async Task<CoordinatorResponse> Post(CoordinatorDto coordinator)
@@ -88,6 +95,25 @@ namespace HoursBank.Service.Services
         public async Task<bool> Delete(int id)
         {
             return await _repository.DeleteAsync(id);
+        }
+
+        public async Task<bool> DeleteByTeam(int teamId)
+        {
+            try
+            {
+                IEnumerable<CoordinatorResponse> list = await this.GetByTeam(teamId);
+                foreach (var coordinator in list)
+                {
+                    await _repository.DeleteAsync(coordinator.Id);
+                }
+                return true;
+
+            }
+            catch(Exception)
+            { 
+                return false;
+            }
+            
         }
     }
 }

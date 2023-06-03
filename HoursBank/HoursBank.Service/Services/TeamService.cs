@@ -13,11 +13,19 @@ namespace HoursBank.Service.Services
     public class TeamService : ITeamService
     {
         private readonly IRepository<TeamEntity> _repository;
+        private readonly IRepository<CoordinatorEntity> _coordinatorRepository;
+        private readonly IRepository<UserEntity> _userRepository;
         private readonly IMapper _mapper;
 
-        public TeamService(IRepository<TeamEntity> repository, IMapper mapper)
+        public TeamService(
+            IRepository<TeamEntity> repository,
+            IRepository<CoordinatorEntity> coordinatorRepository,
+            IRepository<UserEntity> userRepository,
+            IMapper mapper)
         {
             _repository = repository;
+            _coordinatorRepository = coordinatorRepository;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
 
@@ -26,7 +34,24 @@ namespace HoursBank.Service.Services
             var result = await _repository.SelectAsync(id);
             if (result != null)
             {
-                return _mapper.Map<TeamResponse>(result);
+                var team = _mapper.Map<TeamResponse>(result);
+
+                var coordinators = await _coordinatorRepository.SelectAsync();
+                var users = await _userRepository.SelectAsync();
+
+                var coords = coordinators.Where(c => c.TeamId == team.Id)
+                                .Select(c => new CoordinatorDto
+                                {
+                                    Id = c.Id,
+                                    UserId = c.UserId,
+                                    TeamId = c.TeamId,
+                                    UserName = users.Single(u => u.Id == c.UserId).Email
+                                }).ToList();
+                if (coords.Any())
+                {
+                    team.Coordinators = coords;
+                }
+                return team;
             }
             return null;
         }
@@ -39,6 +64,29 @@ namespace HoursBank.Service.Services
                 return _mapper.Map<List<TeamResponse>>(result);
             }
             return null;
+        }
+
+        public async Task<IEnumerable<TeamResponse>> GetTeamsCoordinators()
+        {
+            var response = new List<TeamResponse>();
+
+            var teams = await _repository.SelectAsync();
+            var coordinators = await _coordinatorRepository.SelectAsync();
+            var users = await _userRepository.SelectAsync();
+                
+            return teams.Select(t => new TeamResponse
+                   {
+                        Id = t.Id,
+                        Name = t.Name,
+                        Coordinators = coordinators.Where(c => c.TeamId == t.Id)
+                            .Select(c => new CoordinatorDto
+                            {
+                                Id = c.Id,
+                                UserId = c.UserId,
+                                TeamId = c.TeamId,
+                                UserName = users.Single(u => u.Id == c.UserId).Email
+                            }).ToList()
+                   }).ToList();
         }
 
         public async Task<TeamResponse> GetByName(string name)
@@ -57,6 +105,18 @@ namespace HoursBank.Service.Services
             var result = await _repository.InsertAsync(entity);
             if (result != null)
             {
+                // Adiciona todos coordenadores que foram enviados da pagina
+                var insertTasks = new List<Task>();
+                foreach (var c in team.Coordinators)
+                {
+                    insertTasks.Add(_coordinatorRepository.InsertAsync(new CoordinatorEntity()
+                    {
+                        TeamId = result.Id,
+                        UserId = c.UserId
+                    }));
+                }
+                await Task.WhenAll(insertTasks);
+
                 return _mapper.Map<TeamResponse>(result);
             }
             return null;
@@ -70,6 +130,49 @@ namespace HoursBank.Service.Services
             var result = await _repository.UpdateAsync(teamOld);
             if (result != null)
             {
+                var coords = _mapper.Map<List<CoordinatorResponse>>(
+                    (await _coordinatorRepository.SelectAsync()).ToList().Where(c => c.TeamId == result.Id));
+                
+                var tasks = new List<Task>();
+                if (team.Coordinators.Count() == 0)
+                {
+                    foreach (var c in coords)
+                    {
+                        tasks.Add(_coordinatorRepository.DeleteAsync(c.Id));
+                    }
+                }
+                else
+                {
+                    foreach (var coord in coords)
+                    {
+                        if (!team.Coordinators.Where(c => c.UserId == coord.UserId).Any())
+                        {
+                            tasks.Add(_coordinatorRepository.DeleteAsync(coord.Id));
+                        }
+                        else
+                        {
+                            // Encontrar o item correspondente na lista team.Coordinators
+                            var matchingCoord = team.Coordinators.FirstOrDefault(c => c.UserId == coord.UserId);
+
+                            // Remover o item correspondente da lista team.Coordinators
+                            team.Coordinators.Remove(matchingCoord);
+                        }
+                    }
+
+                    foreach (var coord in team.Coordinators)
+                    {
+                        tasks.Add(_coordinatorRepository.InsertAsync(new CoordinatorEntity()
+                        {
+                            TeamId = result.Id,
+                            UserId = coord.UserId
+                        }));
+                    }
+                }
+                
+                await Task.WhenAll(tasks);
+                // Aguardar a conclusão de todas as tarefas
+                await _coordinatorRepository.SaveChangesAsync();
+
                 return _mapper.Map<TeamResponse>(result);
             }
             return null;
@@ -77,6 +180,12 @@ namespace HoursBank.Service.Services
 
         public async Task<bool> Delete(int id)
         {
+            var users = await _userRepository.SelectAsync();
+            var coordinators = await _coordinatorRepository.SelectAsync();
+            if (users.Where(u => u.TeamId == id).Any() || coordinators.Where(c => c.TeamId == id).Any())
+            {
+                return false;
+            }
             return await _repository.DeleteAsync(id);
         }
     }

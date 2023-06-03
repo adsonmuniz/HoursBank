@@ -9,6 +9,7 @@ namespace HoursBank.Domain.Interfaces.Services
     {
         Task<TeamResponse> Get(int id);
         Task<IEnumerable<TeamResponse>> GetAll();
+        Task<IEnumerable<TeamResponse>> GetTeamsCoordinators();
         Task<TeamResponse> GetByName(string name);
         Task<TeamResponse> Post(TeamDto team);
         Task<TeamResponse> Put(TeamDto team);

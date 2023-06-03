@@ -19,7 +19,7 @@ namespace HoursBank.Data.Mapping
             builder.Property(u => u.ClientSecret).HasMaxLength(50);
             builder.Property(u => u.Hours).HasDefaultValue(0);
             builder.Property(u => u.Admin).HasDefaultValue(false);
-            builder.Property(u => u.Active).HasDefaultValue(false);
+            builder.Property(u => u.Active);
             builder.Property(u => u.TeamId);
         }
     }

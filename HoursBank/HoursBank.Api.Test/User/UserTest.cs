@@ -23,6 +23,8 @@ namespace HoursBank.Api.Test.User
 
             #region Get Test
             var serviceMock = new Mock<IUserService>();
+            var loginServiceMock = new Mock<ILoginService>();
+
             serviceMock.Setup(m => m.Get(It.IsAny<int>())).ReturnsAsync(
                 new UserResponse
                 {
@@ -36,7 +38,7 @@ namespace HoursBank.Api.Test.User
                 }
             );
 
-            _controller = new UserController(serviceMock.Object);
+            _controller = new UserController(serviceMock.Object, loginServiceMock.Object);
             Mock<IUrlHelper> url = new Mock<IUrlHelper>();
             url.Setup(u => u.Link(It.IsAny<string>(), It.IsAny<object>())).Returns("http://localhost:5000");
             _controller.Url = url.Object;
@@ -49,13 +51,13 @@ namespace HoursBank.Api.Test.User
             Assert.NotNull(userResponse);
             Assert.Equal(userResponse.Name, name);
             Assert.Equal(userResponse.Email, email);
-            Assert.True(userResponse.Active);
+            Assert.True(userResponse.Active.HasValue && userResponse.Active.Value);
             Assert.False(userResponse.Admin);
             Assert.NotNull(userResponse.TeamId);
             #endregion
 
             #region Bad Request Test
-            _controller = new UserController(serviceMock.Object);
+            _controller = new UserController(serviceMock.Object, loginServiceMock.Object);
             _controller.ModelState.AddModelError("Id", "Campo obrigatório!");
             _controller.Url = url.Object;
 
@@ -87,9 +89,10 @@ namespace HoursBank.Api.Test.User
 
             #region GetAll Test
             var serviceMock = new Mock<IUserService>();
+            var loginServiceMock = new Mock<ILoginService>();
             serviceMock.Setup(m => m.GetAll()).ReturnsAsync( listUsers );
 
-            _controller = new UserController(serviceMock.Object);
+            _controller = new UserController(serviceMock.Object, loginServiceMock.Object);
             Mock<IUrlHelper> url = new Mock<IUrlHelper>();
             url.Setup(u => u.Link(It.IsAny<string>(), It.IsAny<object>())).Returns("http://localhost:5000");
             _controller.Url = url.Object;
@@ -104,7 +107,7 @@ namespace HoursBank.Api.Test.User
             #endregion
 
             #region Bad Request Test
-            _controller = new UserController(serviceMock.Object);
+            _controller = new UserController(serviceMock.Object, loginServiceMock.Object);
             _controller.ModelState.AddModelError("Id", "Campo obrigatório!");
             _controller.Url = url.Object;
 
@@ -137,9 +140,10 @@ namespace HoursBank.Api.Test.User
 
             #region Get by team Test
             var serviceMock = new Mock<IUserService>();
+            var loginServiceMock = new Mock<ILoginService>();
             serviceMock.Setup(m => m.GetByTeam(It.IsAny<int>())).ReturnsAsync( listUsers );
 
-            _controller = new UserController(serviceMock.Object);
+            _controller = new UserController(serviceMock.Object, loginServiceMock.Object);
             Mock<IUrlHelper> url = new Mock<IUrlHelper>();
             url.Setup(u => u.Link(It.IsAny<string>(), It.IsAny<object>())).Returns("http://localhost:5000");
             _controller.Url = url.Object;
@@ -155,7 +159,7 @@ namespace HoursBank.Api.Test.User
             #endregion
 
             #region Bad Request Test
-            _controller = new UserController(serviceMock.Object);
+            _controller = new UserController(serviceMock.Object, loginServiceMock.Object);
             _controller.ModelState.AddModelError("Id", "Campo obrigatório!");
             _controller.Url = url.Object;
 
@@ -175,6 +179,7 @@ namespace HoursBank.Api.Test.User
 
             #region Get Test
             var serviceMock = new Mock<IUserService>();
+            var loginServiceMock = new Mock<ILoginService>();
             serviceMock.Setup(m => m.GetByEmail(It.IsAny<string>())).ReturnsAsync(
                 new UserResponse
                 {
@@ -188,7 +193,7 @@ namespace HoursBank.Api.Test.User
                 }
             );
 
-            _controller = new UserController(serviceMock.Object);
+            _controller = new UserController(serviceMock.Object, loginServiceMock.Object);
             Mock<IUrlHelper> url = new Mock<IUrlHelper>();
             url.Setup(u => u.Link(It.IsAny<string>(), It.IsAny<object>())).Returns("http://localhost:5000");
             _controller.Url = url.Object;
@@ -207,7 +212,7 @@ namespace HoursBank.Api.Test.User
             #endregion
 
             #region Bad Request Test
-            _controller = new UserController(serviceMock.Object);
+            _controller = new UserController(serviceMock.Object, loginServiceMock.Object);
             _controller.ModelState.AddModelError("Email", "Campo obrigatório!");
             _controller.Url = url.Object;
 
@@ -220,6 +225,8 @@ namespace HoursBank.Api.Test.User
         public async Task PossibleCreateUser()
         {
             var serviceMock = new Mock<IUserService>();
+            var loginServiceMock = new Mock<ILoginService>();
+
             var email = Faker.Internet.Email();
             var randomGenerator = new Random();
             var number = randomGenerator.Next(1, 999);
@@ -247,7 +254,7 @@ namespace HoursBank.Api.Test.User
                 Password = password
             };
 
-            _controller = new UserController(serviceMock.Object);
+            _controller = new UserController(serviceMock.Object, loginServiceMock.Object);
             Mock<IUrlHelper> url = new Mock<IUrlHelper>();
             url.Setup(u => u.Link(It.IsAny<string>(), It.IsAny<object>())).Returns("http://localhost:5000");
             _controller.Url = url.Object;
@@ -266,7 +273,7 @@ namespace HoursBank.Api.Test.User
             #endregion
 
             #region Bad Request Test
-            _controller = new UserController(serviceMock.Object);
+            _controller = new UserController(serviceMock.Object, loginServiceMock.Object);
             _controller.ModelState.AddModelError("Name", "Campo obrigatório!");
             _controller.Url = url.Object;
 
@@ -279,6 +286,7 @@ namespace HoursBank.Api.Test.User
         public async Task PossibleUpdateUser()
         {
             var serviceMock = new Mock<IUserService>();
+            var loginServiceMock = new Mock<ILoginService>();
 
             var randomGenerator = new Random();
             var id = randomGenerator.Next(1, 9);
@@ -311,7 +319,7 @@ namespace HoursBank.Api.Test.User
                 TeamId = 2
             };
 
-            _controller = new UserController(serviceMock.Object);
+            _controller = new UserController(serviceMock.Object, loginServiceMock.Object);
             Mock<IUrlHelper> url = new Mock<IUrlHelper>();
             url.Setup(u => u.Link(It.IsAny<string>(), It.IsAny<object>())).Returns("http://localhost:5000");
             _controller.Url = url.Object;
@@ -331,7 +339,7 @@ namespace HoursBank.Api.Test.User
             #endregion
 
             #region Bad Request Test
-            _controller = new UserController(serviceMock.Object);
+            _controller = new UserController(serviceMock.Object, loginServiceMock.Object);
             _controller.ModelState.AddModelError("Name", "Campo obrigatório!");
             _controller.Url = url.Object;
 
@@ -348,9 +356,10 @@ namespace HoursBank.Api.Test.User
 
             #region Delete Test
             var serviceMock = new Mock<IUserService>();
+            var loginServiceMock = new Mock<ILoginService>();
             serviceMock.Setup(m => m.Delete(It.IsAny<int>())).ReturnsAsync(true);
 
-            _controller = new UserController(serviceMock.Object);
+            _controller = new UserController(serviceMock.Object, loginServiceMock.Object);
             Mock<IUrlHelper> url = new Mock<IUrlHelper>();
             url.Setup(u => u.Link(It.IsAny<string>(), It.IsAny<object>())).Returns("http://localhost:5000");
             _controller.Url = url.Object;
@@ -364,7 +373,7 @@ namespace HoursBank.Api.Test.User
             #endregion
 
             #region Bad Request Test
-            _controller = new UserController(serviceMock.Object);
+            _controller = new UserController(serviceMock.Object, loginServiceMock.Object);
             _controller.ModelState.AddModelError("Id", "Não pode ser 0");
             _controller.Url = url.Object;
 
