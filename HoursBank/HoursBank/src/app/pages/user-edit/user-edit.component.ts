@@ -74,9 +74,9 @@ export class UserEditComponent implements OnInit {
     this.userService.addObserver((user: User) => {
       if (this.authentication.user.id != this.id) {
         this.data = user;
-        if (this.data.active) {
+        if (this.data.active && this.data.active != "false") {
           this.data.active = "true";
-        } else if (this.data.active === false) {
+        } else if (this.data.active === false || this.data.active === "false") {
           this.data.active = "false";
         } else {
           this.data.active = "";

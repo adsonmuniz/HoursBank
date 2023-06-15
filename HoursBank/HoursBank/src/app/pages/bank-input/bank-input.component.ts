@@ -44,7 +44,7 @@ export class BankInputComponent implements OnInit {
   }
 
   public submit(type: number) {
-    if (this.validateForm()) {
+    if (this.validateForm(type)) {
       let ok: boolean = false;
       if (type === 1 && confirm("Confirma a solicitação de ACRÉSCIMO de horas?")) {
         ok = true;
@@ -67,7 +67,7 @@ export class BankInputComponent implements OnInit {
     this.router.navigate(['home']);
   }
 
-  private validateForm() {
+  private validateForm(type: number) {
     this.messageService.clearMessage();
     let valid = true;
     if (!this.bank.start) {
@@ -85,6 +85,18 @@ export class BankInputComponent implements OnInit {
     } else if (this.bank.start >= this.bank.end) {
       this.messageService.setMessage({ text: "Insira um período válido.", type: "warning" });
       document.getElementById('start')?.focus();
+      valid = false;
+    } else if (new Date(this.bank.start).getTime() > Date.now()) {
+      this.messageService.setMessage({ text: "Não é possível inserir data futura.", type: "warning" });
+      document.getElementById('start')?.focus();
+      valid = false;
+    } else if (new Date(this.bank.end).getTime() > Date.now()) {
+      this.messageService.setMessage({ text: "Não é possível inserir data futura.", type: "warning" });
+      document.getElementById('end')?.focus();
+      valid = false;
+    } else if (type === 1 && (new Date(this.bank.end).getTime() - new Date(this.bank.start).getTime()) > 7200000) {
+      this.messageService.setMessage({ text: "Pela legislação atual o máximo é 2 horas diárias.", type: "warning" });
+      document.getElementById('end')?.focus();
       valid = false;
     }
     return valid;

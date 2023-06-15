@@ -81,6 +81,24 @@ export class BankService implements OnInit {
     }
   }
 
+  public getBank(id: number) {
+    var headers = this.httpOptions();
+    if (headers != undefined) {
+      this.http.get(`${API_URL}Bank/${id}`, { headers: headers })
+        .subscribe(
+          (response: any) => {
+            this.bank = response;
+            this.notifyObservers(this.bank);
+            this.loadingService.setLoading(false);
+          },
+          (error: any) => {
+            console.log(JSON.stringify(error));
+            this.loginService.validateToken();
+          }
+        );
+    }
+  }
+
   public getBanksByCoordinator(id: number) {
     var headers = this.httpOptions();
     if (headers != undefined) {
@@ -93,7 +111,7 @@ export class BankService implements OnInit {
           },
           (error: any) => {
             console.log(JSON.stringify(error));
-            this.loadingService.setLoading(false);
+            this.loginService.validateToken();
           }
         );
     }
@@ -146,21 +164,23 @@ export class BankService implements OnInit {
   public updateBank(bank: Bank) {
     var headers = this.httpOptions();
     if (headers != undefined) {
-      this.http.put(`${API_URL}Bank/Update/`, { bank: bank }, { headers: headers })
+      this.http.put(`${API_URL}Bank/Update/`, bank, { headers: headers })
         .subscribe(
           (response: any) => {
-            this.bank.id = response.id;
-            this.bank.start = response.start;
-            this.bank.end = response.end;
-            this.bank.approved = response.approved;
-            this.bank.userId = response.userId;
-            this.bank.typeId = response.typeId;
-            this.bank.description = response.description;
-
+            this.bank = response;
             this.notifyObservers(this.bank);
+            if (bank.approved) {
+              this.messageService.setMessage({ text: "Horas aprovadas com sucesso", type: "info" });
+            } else {
+              this.messageService.setMessage({ text: "Horas rejeitadas com sucesso", type: "info" });
+            }
+            this.router.navigate(['bank/approvals']);
+            this.loadingService.setLoading(false);
           },
           (error: any) => {
             console.log(JSON.stringify(error));
+            this.loginService.validateToken();
+            this.loadingService.setLoading(false);
           }
         );
     }

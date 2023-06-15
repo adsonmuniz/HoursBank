@@ -5,6 +5,8 @@ import { MatInputModule } from '@angular/material/input';
 
 
 //Components
+import { BankApprovalsComponent } from './pages/bank-approvals/bank-approvals.component';
+import { BankDetailsComponent } from './pages/bank-details/bank-details.component';
 import { BankInputComponent } from './pages/bank-input/bank-input.component';
 import { BankInputsComponent } from './pages/bank-inputs/bank-inputs.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -20,6 +22,8 @@ import { UsersComponent } from './pages/users/users.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
+  { path: 'bank/approvals', component: BankApprovalsComponent },
+  { path: 'bank/details/:id', component: BankDetailsComponent },
   { path: 'bank/input', component: BankInputComponent },
   { path: 'bank/inputs', component: BankInputsComponent },
   { path: 'home', component: HomeComponent },

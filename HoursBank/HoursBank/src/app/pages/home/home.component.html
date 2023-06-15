@@ -16,7 +16,7 @@
 </div>
 <div *ngIf="!data.admin">
     <div>
-        <h3> SEU SALDO É: {{hours}}</h3>
+        <h3> SEU SALDO É: <span [ngClass]="{'positive': positive, 'negative': !positive }">{{hours}}</span></h3>
     </div>
     <div>
         <a (click)="report()" class="report" title="Relatório">
@@ -33,7 +33,7 @@
         </button>
     </div>
     <div *ngIf="this.coordinators.length">
-        <button class="btn btn-primary" [disabled]="this.usersHoursApprove == 0" (click)="approve_hours()">
+        <button class="btn btn-primary" [disabled]="this.usersHoursApprove == 0" (click)="bank_approvals()">
             APROVAR HORAS
             <span *ngIf="this.usersHoursApprove"
                 [ngClass]="{'newUsers': this.usersHoursApprove > 0}">{{this.usersHoursApprove}}</span>

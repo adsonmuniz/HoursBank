@@ -14,6 +14,7 @@ namespace HoursBank.Domain.Dtos
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }
         public string Password { get; set; }
+        public long Hours { get; set; }
         public bool Admin { get; set; }
         public bool? Active { get; set; }
         public int? TeamId { get; set; }

@@ -43,6 +43,30 @@ namespace HoursBank.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<ActionResult> Get(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var result = await _bankService.Get(id);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, $"{ex.Message}. StackTrace: {ex.StackTrace}");
+            }
+        }
+
         [HttpPost]
         [Route("Filter")]
         public async Task<ActionResult> Get([FromBody] BankDto bank)

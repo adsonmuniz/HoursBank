@@ -7,5 +7,7 @@ export interface Bank {
     userId: number,
     typeId: number,
     description: string,
-    status: string
+    status: string,
+    userName: string
+    teamName: string
 }

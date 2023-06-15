@@ -23,6 +23,7 @@ export class HomeComponent {
   public coordinators: Array<Coordinator> | any;
   public data: User | any;
   public hours: string = "0:00";
+  public positive: boolean = true;
   public newUsers: number = 0;
   public usersHoursApprove: number = 0;
   public usersToApprove: Array<User> = [];
@@ -44,6 +45,14 @@ export class HomeComponent {
     if (this.data.id === 0) {
       this.authentication = this.loginService.getAuthentication();
       this.data = this.authentication.user;
+
+      if (this.data.hours != 0) {
+        const totalMinutes = this.data.hours;
+        this.positive = totalMinutes >= 0 ? true : false;
+        const hours = (totalMinutes / 60) | 0;
+        const minutes = totalMinutes % 60;
+        this.hours = (!this.positive ? "-" : "") + hours + ":" + (minutes > 10 ? minutes : "0" + minutes);
+      }
       this.coordinators = this.authentication.coordinators;
 
       if (this.data.name.trim()) {
@@ -63,7 +72,7 @@ export class HomeComponent {
 
       this.bankService.addObserverArray((banks: Array<Bank>) => {
         if (this.coordinators.length > 0) {
-          this.usersHoursApprove = banks.length;
+          this.usersHoursApprove = banks.filter((bank: Bank) => bank.dateApproved === null).length;
         }
       });
 
@@ -76,9 +85,9 @@ export class HomeComponent {
     this.router.navigate(['user/approve']);
   }
 
-  public approve_hours() {
+  public bank_approvals() {
     this.loadingService.setLoading(true);
-    this.router.navigate(['']);
+    this.router.navigate(['bank/approvals']);
   }
 
   public launch_hours() {

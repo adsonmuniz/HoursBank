@@ -15,17 +15,20 @@ namespace HoursBank.Service.Services
     {
         private readonly IRepository<BankEntity> _repository;
         private readonly IRepository<CoordinatorEntity> _coordinatorRepository;
+        private readonly IRepository<TeamEntity> _teamRepository;
         private readonly IRepository<UserEntity> _userRepository;
         private readonly IMapper _mapper;
 
         public BankService(
             IRepository<BankEntity> repository,
             IRepository<CoordinatorEntity> coordinatorRepository,
+            IRepository<TeamEntity> teamRepository,
             IRepository<UserEntity> userRepository,
             IMapper mapper)
         {
             _repository = repository;
             _coordinatorRepository = coordinatorRepository;
+            _teamRepository = teamRepository;
             _userRepository = userRepository;
             _mapper = mapper;
         }
@@ -36,6 +39,22 @@ namespace HoursBank.Service.Services
             if (result.Any())
             {
                 return _mapper.Map<List<BankResponse>>(result);
+            }
+            return null;
+        }
+
+        public async Task<BankResponse> Get(int id)
+        {
+            var bank = await _repository.SelectAsync(id);
+            if (bank != null)
+            {
+                BankResponse bankResponse = _mapper.Map<BankResponse>(bank);
+
+                var user = await _userRepository.SelectAsync(bank.UserId);
+                var team = await _teamRepository.SelectAsync(user.TeamId.Value);
+                bankResponse.UserName = user.Name;
+                bankResponse.TeamName = team.Name;
+                return bankResponse;
             }
             return null;
         }
@@ -83,7 +102,18 @@ namespace HoursBank.Service.Services
             {
                 banks = banks.Where(b => usersId.Contains(b.UserId));
             }
-            return _mapper.Map<List<BankResponse>>(banks);
+
+            var banksResponse = _mapper.Map<List<BankResponse>>(banks);
+
+            foreach (var bank in banksResponse)
+            {
+                var user = await _userRepository.SelectAsync(bank.UserId);
+                var team = await _teamRepository.SelectAsync(user.TeamId.Value);
+                bank.UserName = user.Name.Split(" ")[0] + $" <{user.Email}>";
+                bank.TeamName = team.Name;
+            }
+
+            return banksResponse;
         }
 
         public async Task<BankResponse> Post(BankDto bank)
@@ -103,15 +133,25 @@ namespace HoursBank.Service.Services
             {
                 var bankOld = await _repository.SelectAsync(bank.Id.Value);
 
-                bankOld.Start = bank.Start.Value;
-                bankOld.End = bank.End.Value;
-                bankOld.Approved = false; // to do - descontar caso aprovada
-                bankOld.Description = bank.Description;
-                bankOld.TypeId = bank.TypeId.Value;
+                //bankOld.Start = bank.Start.Value;
+                //bankOld.End = bank.End.Value;
+                //bankOld.Description = bank.Description;
+                //bankOld.TypeId = bank.TypeId.Value;
+                bankOld.Approved = bank.Approved.Value;
+                bankOld.DateApproved = DateTime.Now;
 
                 var result = await _repository.UpdateAsync(bankOld);
                 if (result != null)
                 {
+                    if (bank.Approved.Value)
+                    {
+                        var user = await _userRepository.SelectAsync(bankOld.UserId);
+                        var totalMinutes = (long) TimeSpan.FromTicks(bankOld.End.Ticks - bankOld.Start.Ticks).TotalMinutes;
+                        user.Hours += (bankOld.TypeId == 1) 
+                            ? totalMinutes 
+                            : (-1)*(totalMinutes);
+                        await _userRepository.UpdateAsync(user);
+                    }
                     return _mapper.Map<BankResponse>(result);
                 }
             }

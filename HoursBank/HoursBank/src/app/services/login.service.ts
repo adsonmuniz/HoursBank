@@ -97,7 +97,7 @@ export class LoginService {
               this.loadingService.setLoading(false);
             } else {
               this.notifyObservers(this.authentication);
-              this.router.navigate(['home']);
+              this.router.navigate(['']);
               location.reload();
               this.loadingService.setLoading(false);
             }

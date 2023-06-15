@@ -12,7 +12,7 @@
         <tbody>
             <tr *ngFor="let user of users">
                 <td>
-                    <a routerLink="/user/edit/{{user.id}}">
+                    <a class="link" routerLink="/user/edit/{{user.id}}">
                         {{ user.name }}
                     </a>
                 </td>
@@ -33,6 +33,7 @@
     </table>
     <div class="btn-area">
         <a routerLink="/home" class="btn btn-secondary btn-margin">Voltar</a>
+        <app-export-button fileName="Usuarios.xlsx"></app-export-button>
         <a routerLink="/user/create" class="btn btn-primary submit">Adicionar</a>
     </div>
 </div>

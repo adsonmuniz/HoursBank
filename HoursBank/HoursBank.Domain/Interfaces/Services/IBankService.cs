@@ -8,6 +8,7 @@ namespace HoursBank.Domain.Interfaces.Services
 {
     public interface IBankService
     {
+        Task<BankResponse> Get(int id);
         Task<IEnumerable<BankResponse>> Get(BankDto bank);
         Task<IEnumerable<BankResponse>> GetAll();
         Task<IEnumerable<BankResponse>> GetByCoordinator(int id);

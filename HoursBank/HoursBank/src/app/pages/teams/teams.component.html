@@ -11,7 +11,7 @@
         <tbody>
             <tr *ngFor="let team of teams">
                 <td>
-                    <a routerLink="/teams/edit/{{team.id}}">
+                    <a class="link" routerLink="/teams/edit/{{team.id}}">
                         {{ team.name }}
                     </a>
                 </td>
@@ -19,8 +19,8 @@
                     <span style="color: rgb(250, 101, 15)" *ngIf="!team.coordinators.length">Nenhum coordenador
                         adicionado</span>
                     <ul>
-                        <li style="color: rgb(4, 208, 235)" *ngFor="let coordinator of team.coordinators">
-                            {{coordinator.userName}}
+                        <li style="color: rgb(7, 7, 7)" *ngFor="let coordinator of team.coordinators">
+                            {{coordinator.userName}};
                         </li>
                     </ul>
                 </td>
@@ -33,6 +33,7 @@
     </table>
     <div class="btn-area">
         <a routerLink="/home" class="btn btn-secondary btn-margin">Voltar</a>
+        <app-export-button fileName="Times.xlsx"></app-export-button>
         <a routerLink="/teams/create" class="btn btn-primary submit">Adicionar</a>
     </div>
 </div>

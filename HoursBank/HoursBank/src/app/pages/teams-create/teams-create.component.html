@@ -14,13 +14,15 @@
 
                 <div class="form-group">
                     <label for="coordinator">Selecionar Coordenador:</label>
-                    <select id="coordinator" name="coordinator" [(ngModel)]="data.coordinatorId" style="height: 32px;"
-                        class="form-control input">
-                        <option value="">Selecione o Coordenador</option>
-                        <option *ngFor="let user of users" [value]="user.id">{{user.name}}</option>
-                    </select>
-                    <a (click)="selectedCoordinator()"><img src="../../../assets/img/icons/add_circle.svg" class=""
-                            title="Adicionar" alt="Adicionar"></a>
+                    <div class="inline">
+                        <select id="coordinator" name="coordinator" [(ngModel)]="data.coordinatorId"
+                            style="height: 32px; width: 280px;" class="form-control input btn-margin">
+                            <option value="">Selecione o Coordenador</option>
+                            <option *ngFor="let user of users" [value]="user.id">{{user.name}}</option>
+                        </select>
+                        <a (click)="selectedCoordinator()"><img src="../../../assets/img/icons/add_circle.svg"
+                                title="Adicionar" alt="Adicionar"></a>
+                    </div>
                 </div>
 
                 <div *ngIf="data.coordinators.length > 0 else other_content" class="form-group">

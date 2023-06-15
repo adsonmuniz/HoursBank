@@ -64,3 +64,14 @@ h3 {
 a {
     cursor: pointer;
 }
+
+input {
+    height: 30px !important;
+}
+
+.inline {
+    display: inline-flex;
+    justify-content: center;
+    table-layout: fixed;
+    flex-direction: row;
+}
